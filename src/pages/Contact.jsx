@@ -5,8 +5,8 @@ import emailjs from '@emailjs/browser'
 
 const Contact = () => {
   const [ref, inView] = useInView({
-    threshold: 0.2,
-    triggerOnce: true,
+    threshold: 0.1,
+    triggerOnce: false,
   })
 
   const [formData, setFormData] = useState({
@@ -71,9 +71,14 @@ const Contact = () => {
       // Reset form after successful submission
       setFormData({ name: '', email: '', message: '' })
 
-      // Reset success message after 5 seconds
+      // Reset success message after 5 seconds and allow resubmission
       setTimeout(() => {
-        setStatus(prev => ({ ...prev, submitted: false }))
+        setStatus({
+          submitting: false,
+          submitted: false,
+          error: false,
+          errorMessage: '',
+        })
       }, 5000)
     } catch (error) {
       console.error('EmailJS Error:', error)
@@ -156,12 +161,10 @@ const Contact = () => {
           </motion.div>
 
           {/* Contact Form */}
-          <motion.form
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.4 }}
+          <form
             onSubmit={handleSubmit}
-            className="bg-slate-900/50 border border-slate-800 p-8 rounded-xl"
+            className="bg-slate-900/50 border border-slate-800 p-8 rounded-xl relative z-10"
+            style={{ pointerEvents: 'auto' }}
           >
             <div className="space-y-6">
               <div>
@@ -172,9 +175,10 @@ const Contact = () => {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-colors cursor-text"
                   placeholder="Your name"
                   required
+                  style={{ pointerEvents: 'auto' }}
                 />
               </div>
               <div>
@@ -185,9 +189,10 @@ const Contact = () => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-colors cursor-text"
                   placeholder="your.email@example.com"
                   required
+                  style={{ pointerEvents: 'auto' }}
                 />
               </div>
               <div>
@@ -198,9 +203,10 @@ const Contact = () => {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={5}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-colors resize-none cursor-text"
                   placeholder="Your message..."
                   required
+                  style={{ pointerEvents: 'auto' }}
                 />
               </div>
               {/* Error Message */}
@@ -225,14 +231,12 @@ const Contact = () => {
                 </motion.div>
               )}
 
-              <motion.button
+              <button
                 type="submit"
-                whileHover={status.submitting ? {} : { scale: 1.05 }}
-                whileTap={status.submitting ? {} : { scale: 0.95 }}
                 className={`w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg font-semibold text-white transition-all shadow-lg shadow-purple-500/50 ${
-                  status.submitting || status.submitted ? 'opacity-50 cursor-not-allowed' : ''
+                  status.submitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-105 active:scale-95'
                 }`}
-                disabled={status.submitting || status.submitted}
+                disabled={status.submitting}
               >
                 {status.submitting ? (
                   <span className="flex items-center justify-center gap-2">
@@ -247,9 +251,9 @@ const Contact = () => {
                 ) : (
                   'Send Message'
                 )}
-              </motion.button>
+              </button>
             </div>
-          </motion.form>
+          </form>
         </div>
 
         <motion.div

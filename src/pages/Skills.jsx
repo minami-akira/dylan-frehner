@@ -121,30 +121,32 @@ const Skills = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-purple-500/50 transition-all group"
+              className="bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-purple-500/50 transition-all group hover:-translate-y-2"
+              style={{ pointerEvents: 'auto' }}
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-3xl">{category.icon}</div>
+                <div className="text-3xl group-hover:scale-110 transition-transform duration-300">
+                  {category.icon}
+                </div>
                 <h3 className="text-xl font-semibold text-white group-hover:text-purple-400 transition-colors">
                   {category.title}
                 </h3>
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {category.skills.map((skill, i) => (
                   <motion.li
                     key={i}
-                    className="text-slate-300 flex items-center text-sm"
+                    className="text-slate-300 flex items-center text-sm hover:text-slate-200 transition-colors"
                     initial={{ opacity: 0, x: -10 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
                     transition={{ delay: index * 0.1 + i * 0.05 }}
                   >
-                    <span className={`w-1.5 h-1.5 bg-gradient-to-r ${category.gradient} rounded-full mr-3`} />
-                    {skill}
+                    <span className={`w-2 h-2 rounded-full mr-3 flex-shrink-0 bg-gradient-to-r ${category.gradient}`} />
+                    <span>{skill}</span>
                   </motion.li>
                 ))}
               </ul>
-              <div className={`mt-4 h-1 w-0 group-hover:w-full bg-gradient-to-r ${category.gradient} transition-all duration-300 rounded`} />
+              <div className={`mt-4 h-1 w-0 group-hover:w-full bg-gradient-to-r ${category.gradient} transition-all duration-500 rounded`} />
             </motion.div>
           ))}
         </div>

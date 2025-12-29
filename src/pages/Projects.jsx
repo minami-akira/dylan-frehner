@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
 const Projects = () => {
@@ -73,8 +73,8 @@ const Projects = () => {
     : projects.filter(p => p.category === filter)
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <section className="max-w-7xl mx-auto px-6">
+    <div className="min-h-screen pt-24 pb-16 relative z-0">
+      <section className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 30 }}
@@ -91,68 +91,66 @@ const Projects = () => {
         </motion.div>
 
         {/* Filter Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2 }}
-          className="flex justify-center gap-4 mb-12 flex-wrap"
-        >
+        <div className="flex justify-center gap-4 mb-12 flex-wrap relative z-10">
           {categories.map((cat) => (
-            <motion.button
+            <button
               key={cat}
-              onClick={() => setFilter(cat)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`px-6 py-2 rounded-lg font-medium transition-all capitalize ${
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setFilter(cat)
+              }}
+              type="button"
+              className={`px-6 py-2 rounded-lg font-medium transition-all capitalize cursor-pointer relative z-10 ${
                 filter === cat
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                  : 'bg-slate-800/50 border border-slate-700 text-slate-400 hover:border-purple-500/50'
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/50 hover:from-purple-500 hover:to-pink-500'
+                  : 'bg-slate-800/50 border border-slate-700 text-slate-400 hover:border-purple-500/50 hover:bg-slate-800 hover:text-slate-300'
               }`}
+              style={{ pointerEvents: 'auto', touchAction: 'manipulation' }}
             >
-              {cat}
-            </motion.button>
+              {cat === 'all' ? 'All' : cat === 'ai' ? 'AI' : 'Platform'}
+            </button>
           ))}
-        </motion.div>
+        </div>
 
         {/* Projects Grid */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <AnimatePresence>
-            {filteredProjects.map((project, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.length > 0 ? (
+            filteredProjects.map((project, index) => (
               <motion.div
                 key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-purple-500/50 transition-all group cursor-pointer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-purple-500/50 transition-all group cursor-pointer hover:-translate-y-2"
+                style={{ pointerEvents: 'auto' }}
               >
-                <div className={`text-5xl mb-4 group-hover:scale-110 transition-transform`}>
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
                   {project.icon}
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-white group-hover:text-purple-400 transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-slate-400 text-sm mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2">
+                <p className="text-slate-400 text-sm mb-4 leading-relaxed">{project.description}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
                   {project.tech.map((tech, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-300 rounded-full text-xs"
+                      className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-300 rounded-full text-xs hover:bg-purple-500/20 transition-colors"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
-                <div className={`mt-4 h-1 w-0 group-hover:w-full bg-gradient-to-r ${project.gradient} transition-all duration-300 rounded`} />
+                <div className={`h-1 w-0 group-hover:w-full bg-gradient-to-r ${project.gradient} transition-all duration-500 rounded`} />
               </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-slate-400 text-lg">No projects found in this category.</p>
+            </div>
+          )}
+        </div>
       </section>
     </div>
   )

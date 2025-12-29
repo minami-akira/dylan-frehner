@@ -100,17 +100,17 @@ const Experience = () => {
               
               <p className="text-slate-300 mb-6 italic">{exp.description}</p>
               
-              <ul className="space-y-2 mb-6">
+              <ul className="space-y-3 mb-6">
                 {exp.achievements.map((achievement, i) => (
                   <motion.li
                     key={i}
-                    className="flex items-start text-slate-300"
+                    className="flex items-start text-slate-300 leading-relaxed"
                     initial={{ opacity: 0, x: -10 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
                     transition={{ delay: index * 0.15 + i * 0.05 }}
                   >
-                    <span className="text-purple-400 mr-3 mt-1">•</span>
-                    <span>{achievement}</span>
+                    <span className="text-purple-400 mr-3 mt-1.5 flex-shrink-0">•</span>
+                    <span className="flex-1">{achievement}</span>
                   </motion.li>
                 ))}
               </ul>
